@@ -1,145 +1,221 @@
-require("dotenv").config();
-
-const Discord = require("discord.js");
-
-const client = new Discord.Client({
-  partials: ["MESSAGE"],
-});
-
-const BOT_PREFIX = "$anta";
-const START_SANTA_COMMAND = "start";
-const YES_REACTION = "";
-const NO_REACTION = "";
-
-client.on("ready", () => {
-  console.log("Bot is ready");
-});
-
-client.on("message", (message) => {
-  if (message.content.startsWith(BOT_PREFIX)) {
-    let command = message.content.substring(
-      message.content.indexOf(BOT_PREFIX) + BOT_PREFIX.length + 1
-    );
-
-    switch (command) {
-      case START_SANTA_COMMAND:
-        startSanta(message);
-        break;
-      default:
-        message.channel.send(`That ain't a command bub`);
-        break;
-    }
-  }
-});
-
-async function startSanta(message) {
-  try {
-    let channel = message.channel;
-    let members = channel.members.array();
-
-    await channel.send(
-      "Collecting participants, react to confirm your participation"
-    );
-    let participants = await getParticipants(channel, members);
-
-    if (participants.length <= 0) {
-      return;
-    }
-    await pairSantas(participants);
-    await channel.send("Sent all santas!!");
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-async function getParticipants(channel, members) {
-  let participants = [];
-  let collectors = [];
-  for (let i = 0; i < members.length; i++) {
-    let member = members[i];
-    if (member.id === process.env.BOT_ID) {
-      continue;
-    }
-    let message = await channel.send(`Is ${member.displayName} participating?`);
-    let collector = message.createReactionCollector(
-      (reaction, user) => user.id === member.id,
-      { max: 1 }
-    );
-    collector.on("end", (collected) => {
-      if (
-        collected.size > 0 &&
-        collected.array()[0].emoji.name !== NO_REACTION
-      ) {
-        participants.push(member);
-      }
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
-    collectors[i] = collector;
-
-    // let reactions = await message.awaitReactions(
-    //   (reaction, user) => user.id === member.id,
-    //   {
-    //     max: 1,
-    //   }
-    // );
-    // if (reactions.size > 0) {
-    //   participants.push(member);
-    // }
-  }
-  let resp = await yesOrNo(
-    channel,
-    "Would you like to move on to drawing names? (Once you move on no more participants can be added)",
-    null,
-    { max: 1 }
-  );
-  collectors.forEach((collector) => {
-    collector.stop();
-  });
-  if (participants.length <= 1) {
-    await channel.send(
-      `Need more than 1 participant :(( You only had ${
-        participants.length
-      } participant${participants.length === 1 ? "" : "s"}`
-    );
-    return [];
-  }
-
-  if (!resp) {
-    await channel.send("Cancelled Santa :(");
-    return [];
-  }
-  return participants;
-}
-
-async function pairSantas(participants) {
-  try {
-    let remainingSantas = [...participants];
-    for (let i = 0; i < participants.length; i++) {
-      let participant = participants[i];
-      let randomIndex = Math.floor(Math.random() * remainingSantas.length);
-      let santa = remainingSantas[randomIndex];
-
-      while (santa.id === participant.id) {
-        randomIndex = Math.floor(Math.random() * remainingSantas.length);
-        santa = remainingSantas[randomIndex];
-      }
-
-      await participant.send(
-        `Your special someone is ${santa.displayName} ;)))`
-      );
-      remainingSantas.splice(randomIndex, 1);
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
-  } catch (error) {
-    console.log(error);
-  }
+};
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
+require("dotenv").config();
+var Discord = require("discord.js");
+var client = new Discord.Client({
+    partials: ["MESSAGE"]
+});
+var BOT_PREFIX = "$anta";
+var START_SANTA_COMMAND = "start";
+var YES_REACTION = "";
+var NO_REACTION = "";
+client.on("ready", function () {
+    console.log("Bot is ready");
+});
+client.on("message", function (message) {
+    if (message.content.startsWith(BOT_PREFIX)) {
+        var command = message.content.substring(message.content.indexOf(BOT_PREFIX) + BOT_PREFIX.length + 1);
+        switch (command) {
+            case START_SANTA_COMMAND:
+                startSanta(message);
+                break;
+            default:
+                message.channel.send("That ain't a command bub");
+                break;
+        }
+    }
+});
+function startSanta(message) {
+    return __awaiter(this, void 0, void 0, function () {
+        var channel, members, participants, error_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 5, , 6]);
+                    channel = message.channel;
+                    members = channel.members.array();
+                    return [4 /*yield*/, channel.send("Collecting participants, react to confirm your participation")];
+                case 1:
+                    _a.sent();
+                    return [4 /*yield*/, getParticipants(channel, members)];
+                case 2:
+                    participants = _a.sent();
+                    if (participants.length <= 0) {
+                        return [2 /*return*/];
+                    }
+                    return [4 /*yield*/, pairSantas(participants)];
+                case 3:
+                    _a.sent();
+                    return [4 /*yield*/, channel.send("Sent all santas!!")];
+                case 4:
+                    _a.sent();
+                    return [3 /*break*/, 6];
+                case 5:
+                    error_1 = _a.sent();
+                    console.log(error_1);
+                    return [3 /*break*/, 6];
+                case 6: return [2 /*return*/];
+            }
+        });
+    });
 }
-
-async function yesOrNo(channel, question, reactionFilter, collectorOptions) {
-  let message = await channel.send(question);
-  let reactions = await message.awaitReactions(
-    reactionFilter ? reactionFilter : (reaction, user) => true,
-    collectorOptions ? collectorOptions : {}
-  );
-  return reactions.size > 0 && reactions.array()[0].emoji.name !== NO_REACTION;
+function getParticipants(channel, members) {
+    return __awaiter(this, void 0, void 0, function () {
+        var participants, collectors, _loop_1, i, resp;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    participants = [];
+                    collectors = [];
+                    _loop_1 = function (i) {
+                        var member, message, collector;
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0:
+                                    member = members[i];
+                                    if (member.id === process.env.BOT_ID) {
+                                        return [2 /*return*/, "continue"];
+                                    }
+                                    return [4 /*yield*/, channel.send("Is " + member.displayName + " participating?")];
+                                case 1:
+                                    message = _a.sent();
+                                    collector = message.createReactionCollector(function (reaction, user) { return user.id === member.id; }, { max: 1 });
+                                    collector.on("end", function (collected) {
+                                        if (collected.size > 0 &&
+                                            collected.array()[0].emoji.name !== NO_REACTION) {
+                                            participants.push(member);
+                                        }
+                                    });
+                                    collectors[i] = collector;
+                                    return [2 /*return*/];
+                            }
+                        });
+                    };
+                    i = 0;
+                    _a.label = 1;
+                case 1:
+                    if (!(i < members.length)) return [3 /*break*/, 4];
+                    return [5 /*yield**/, _loop_1(i)];
+                case 2:
+                    _a.sent();
+                    _a.label = 3;
+                case 3:
+                    i++;
+                    return [3 /*break*/, 1];
+                case 4: return [4 /*yield*/, yesOrNo(channel, "Would you like to move on to drawing names? (Once you move on no more participants can be added)", null, { max: 1 })];
+                case 5:
+                    resp = _a.sent();
+                    collectors.forEach(function (collector) {
+                        collector.stop();
+                    });
+                    if (!(participants.length <= 1)) return [3 /*break*/, 7];
+                    return [4 /*yield*/, channel.send("Need more than 1 participant :(( You only had " + participants.length + " participant" + (participants.length === 1 ? "" : "s"))];
+                case 6:
+                    _a.sent();
+                    return [2 /*return*/, []];
+                case 7:
+                    if (!!resp) return [3 /*break*/, 9];
+                    return [4 /*yield*/, channel.send("Cancelled Santa :(")];
+                case 8:
+                    _a.sent();
+                    return [2 /*return*/, []];
+                case 9: return [2 /*return*/, participants];
+            }
+        });
+    });
 }
-
+function pairSantas(participants) {
+    return __awaiter(this, void 0, void 0, function () {
+        var remainingSantas, i, participant, randomIndex, santa, error_2;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 5, , 6]);
+                    remainingSantas = __spreadArrays(participants);
+                    i = 0;
+                    _a.label = 1;
+                case 1:
+                    if (!(i < participants.length)) return [3 /*break*/, 4];
+                    participant = participants[i];
+                    randomIndex = Math.floor(Math.random() * remainingSantas.length);
+                    santa = remainingSantas[randomIndex];
+                    while (santa.id === participant.id) {
+                        randomIndex = Math.floor(Math.random() * remainingSantas.length);
+                        santa = remainingSantas[randomIndex];
+                    }
+                    return [4 /*yield*/, participant.send("Your special someone is " + santa.displayName + " ;)))")];
+                case 2:
+                    _a.sent();
+                    remainingSantas.splice(randomIndex, 1);
+                    _a.label = 3;
+                case 3:
+                    i++;
+                    return [3 /*break*/, 1];
+                case 4: return [3 /*break*/, 6];
+                case 5:
+                    error_2 = _a.sent();
+                    console.log(error_2);
+                    return [3 /*break*/, 6];
+                case 6: return [2 /*return*/];
+            }
+        });
+    });
+}
+function yesOrNo(channel, question, reactionFilter, collectorOptions) {
+    return __awaiter(this, void 0, void 0, function () {
+        var message, reactions;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, channel.send(question)];
+                case 1:
+                    message = _a.sent();
+                    return [4 /*yield*/, message.awaitReactions(reactionFilter ? reactionFilter : function (reaction, user) { return true; }, collectorOptions ? collectorOptions : {})];
+                case 2:
+                    reactions = _a.sent();
+                    return [2 /*return*/, reactions.size > 0 && reactions.array()[0].emoji.name !== NO_REACTION];
+            }
+        });
+    });
+}
 client.login(process.env.BOT_TOKEN);
