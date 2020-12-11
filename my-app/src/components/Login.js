@@ -11,20 +11,18 @@ import Typography from "@material-ui/core/Typography";
 import firebase from "../firebase.js";
 import { Container, Row, Col, Nav, Tab } from "react-bootstrap";
 import CircularProgress from "@material-ui/core/CircularProgress";
-
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {"Copyright © "}
       <Link color="inherit" href="https://material-ui.com/">
-        Your Website
+        Tandon-Kulkarni
       </Link>{" "}
       {new Date().getFullYear()}
       {"."}
     </Typography>
   );
 }
-
 export default class SignIn extends React.Component {
   constructor(props) {
     super(props);
@@ -39,36 +37,47 @@ export default class SignIn extends React.Component {
       userData: "",
     };
   }
-
   componentDidMount() {
     let ref = this;
     let db = firebase.firestore();
     firebase.auth().onAuthStateChanged(function (user) {
       if (user) {
-        console.log("hihihi", user.uid);
+        console.log("hihihi", user.email);
         let data = null;
-        let docRef = db.collection("users").doc(user.uid);
         Promise.all([
-          docRef.get().then(function (doc) {
-            if (doc.exists) {
-              data = doc.data();
-              console.log("THE USER", user);
-            }
-          }),
+          db
+            .collection("users")
+            .where("email", "==", user.email)
+            .get()
+            .then(function (querySnapshot) {
+              querySnapshot.forEach(function (doc) {
+                if (doc.exists) {
+                  console.log("EXITS");
+                  data = doc.data();
+                  console.log("THE USER", user);
+                }
+              });
+            })
+            .catch(function (error) {
+              console.log("Error getting documents: ", error);
+            }),
         ]).then(() => {
           ref.setState({ authed: true });
           ref.setState({ userData: data });
         });
       }
     });
-
     db.collection("commands")
       .doc("commandCenter")
       .onSnapshot(function (doc) {
         ref.setState({ drawState: doc.data()["state"] });
+        db.collection("users")
+          .doc(firebase.auth().currentUser.uid)
+          .get((snap) => {
+            ref.setState({ userData: snap.data() });
+          });
       });
   }
-
   createUser = () => {
     this.setState({ creating: true });
     let db = firebase.firestore();
@@ -84,6 +93,7 @@ export default class SignIn extends React.Component {
             name: this.state.name,
             person: "",
             personDesire: "",
+            email: this.state.email,
           })
           .then(function () {
             ref.setState({ creating: false });
@@ -98,7 +108,6 @@ export default class SignIn extends React.Component {
         // ..
       });
   };
-
   login = () => {
     this.setState({ creating: true });
     let ref = this;
@@ -113,11 +122,9 @@ export default class SignIn extends React.Component {
         var errorMessage = error.message;
       });
   };
-
   handleChange = (event) => {
     this.setState({ [event.target.name]: event.target.value });
   };
-
   render() {
     if (!this.state.authed || this.state.creating) {
       return (
@@ -138,7 +145,7 @@ export default class SignIn extends React.Component {
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
-              Poo Poo Secret Santa
+              Secret Santa
             </Typography>
             <Tab.Container
               id="left-tabs-example"
@@ -208,7 +215,6 @@ export default class SignIn extends React.Component {
                           autoFocus
                           onChange={this.handleChange}
                         />
-
                         <Row style={{ marginTop: "25px" }}>
                           <Button
                             fullWidth
@@ -249,7 +255,6 @@ export default class SignIn extends React.Component {
                           autoComplete="current-password"
                           onChange={this.handleChange}
                         />
-
                         <Row style={{ marginTop: "25px" }}>
                           <Button
                             fullWidth
@@ -279,21 +284,28 @@ export default class SignIn extends React.Component {
           style={{
             justifyContent: "center",
             textAlign: "center",
-            marginTop: "200px",
+            marginTop: "300px",
           }}
         >
           <CircularProgress color="secondary" />
           {this.state.drawState == "wait" && (
             <h2>The drawing has not started.</h2>
           )}
-          {this.state.drawState == "started" && (
-            <h2>Drawing has started. Wait.</h2>
-          )}
-          {this.state.drawState == "release" && (
+          {this.state.drawState == "started" && <h2>Pairing...</h2>}
+          {this.state.drawState == "released" && (
             <>
-              <h2>Here's who you got. Sucks to suck.</h2>
-              <h8>Person : {this.state.userData.person}</h8>
-              <h8>Person : {this.state.userData.personDesire}</h8>
+              <Row
+                className="justify-content-center"
+                style={{ marginTop: "20px" }}
+              >
+                <h2>Here's who you got. Sucks to suck.</h2>
+              </Row>
+              <Row className="justify-content-center">
+                <h5>Person : {this.state.userData.person}</h5>
+              </Row>
+              <Row className="justify-content-center">
+                <h5>What They Want : {this.state.userData.personDesire}</h5>
+              </Row>
             </>
           )}
         </Container>
