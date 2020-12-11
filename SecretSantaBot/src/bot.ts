@@ -42,6 +42,7 @@ client.on("message", (message: Message) => {
 });
 
 async function startSanta(message: Message) {
+  
   try {
     let channel = message.channel as TextChannel;
     let members = channel.members.array();
