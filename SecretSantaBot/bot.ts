@@ -1,8 +1,17 @@
-require("dotenv").config();
+import { config } from "dotenv";
+import {
+  Client,
+  Message,
+  TextChannel,
+  GuildMember,
+  DMChannel,
+  CollectorFilter,
+  AwaitReactionsOptions,
+} from "discord.js";
 
-const Discord = require("discord.js");
+config();
 
-const client = new Discord.Client({
+const client = new Client({
   partials: ["MESSAGE"],
 });
 
@@ -15,7 +24,7 @@ client.on("ready", () => {
   console.log("Bot is ready");
 });
 
-client.on("message", (message) => {
+client.on("message", (message: Message) => {
   if (message.content.startsWith(BOT_PREFIX)) {
     let command = message.content.substring(
       message.content.indexOf(BOT_PREFIX) + BOT_PREFIX.length + 1
@@ -32,11 +41,10 @@ client.on("message", (message) => {
   }
 });
 
-async function startSanta(message) {
+async function startSanta(message: Message) {
   try {
-    let channel = message.channel;
+    let channel = message.channel as TextChannel;
     let members = channel.members.array();
-
     await channel.send(
       "Collecting participants, react to confirm your participation"
     );
@@ -52,8 +60,11 @@ async function startSanta(message) {
   }
 }
 
-async function getParticipants(channel, members) {
-  let participants = [];
+async function getParticipants(
+  channel: TextChannel,
+  members: Array<GuildMember>
+): Promise<Array<GuildMember>> {
+  let participants: Array<GuildMember> = [];
   let collectors = [];
   for (let i = 0; i < members.length; i++) {
     let member = members[i];
@@ -88,7 +99,7 @@ async function getParticipants(channel, members) {
   let resp = await yesOrNo(
     channel,
     "Would you like to move on to drawing names? (Once you move on no more participants can be added)",
-    null,
+    undefined,
     { max: 1 }
   );
   collectors.forEach((collector) => {
@@ -110,7 +121,7 @@ async function getParticipants(channel, members) {
   return participants;
 }
 
-async function pairSantas(participants) {
+async function pairSantas(participants: Array<GuildMember>): Promise<void> {
   try {
     let remainingSantas = [...participants];
     for (let i = 0; i < participants.length; i++) {
@@ -133,7 +144,12 @@ async function pairSantas(participants) {
   }
 }
 
-async function yesOrNo(channel, question, reactionFilter, collectorOptions) {
+async function yesOrNo(
+  channel: TextChannel | DMChannel,
+  question: string,
+  reactionFilter?: CollectorFilter,
+  collectorOptions?: AwaitReactionsOptions
+) {
   let message = await channel.send(question);
   let reactions = await message.awaitReactions(
     reactionFilter ? reactionFilter : (reaction, user) => true,

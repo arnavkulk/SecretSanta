@@ -1,3 +1,4 @@
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -41,9 +42,11 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
             r[k] = a[j];
     return r;
 };
-require("dotenv").config();
-var Discord = require("discord.js");
-var client = new Discord.Client({
+exports.__esModule = true;
+var dotenv_1 = require("dotenv");
+var discord_js_1 = require("discord.js");
+dotenv_1.config();
+var client = new discord_js_1.Client({
     partials: ["MESSAGE"]
 });
 var BOT_PREFIX = "$anta";
@@ -143,7 +146,7 @@ function getParticipants(channel, members) {
                 case 3:
                     i++;
                     return [3 /*break*/, 1];
-                case 4: return [4 /*yield*/, yesOrNo(channel, "Would you like to move on to drawing names? (Once you move on no more participants can be added)", null, { max: 1 })];
+                case 4: return [4 /*yield*/, yesOrNo(channel, "Would you like to move on to drawing names? (Once you move on no more participants can be added)", undefined, { max: 1 })];
                 case 5:
                     resp = _a.sent();
                     collectors.forEach(function (collector) {
