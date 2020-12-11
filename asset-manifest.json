@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/atandon318/SecretSanta.git/static/css/main.6dea0f05.chunk.css",
+    "main.js": "/atandon318/SecretSanta.git/static/js/main.16c30ac8.chunk.js",
+    "main.js.map": "/atandon318/SecretSanta.git/static/js/main.16c30ac8.chunk.js.map",
+    "runtime-main.js": "/atandon318/SecretSanta.git/static/js/runtime-main.bc70f9e5.js",
+    "runtime-main.js.map": "/atandon318/SecretSanta.git/static/js/runtime-main.bc70f9e5.js.map",
+    "static/js/2.aaa89fc1.chunk.js": "/atandon318/SecretSanta.git/static/js/2.aaa89fc1.chunk.js",
+    "static/js/2.aaa89fc1.chunk.js.map": "/atandon318/SecretSanta.git/static/js/2.aaa89fc1.chunk.js.map",
+    "static/js/3.dbde5200.chunk.js": "/atandon318/SecretSanta.git/static/js/3.dbde5200.chunk.js",
+    "static/js/3.dbde5200.chunk.js.map": "/atandon318/SecretSanta.git/static/js/3.dbde5200.chunk.js.map",
+    "index.html": "/atandon318/SecretSanta.git/index.html",
+    "static/css/main.6dea0f05.chunk.css.map": "/atandon318/SecretSanta.git/static/css/main.6dea0f05.chunk.css.map",
+    "static/js/2.aaa89fc1.chunk.js.LICENSE.txt": "/atandon318/SecretSanta.git/static/js/2.aaa89fc1.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.bc70f9e5.js",
+    "static/js/2.aaa89fc1.chunk.js",
+    "static/css/main.6dea0f05.chunk.css",
+    "static/js/main.16c30ac8.chunk.js"
+  ]
+}
