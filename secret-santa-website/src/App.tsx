@@ -1,23 +1,9 @@
 import React from "react";
+import { db, auth } from "./firebase";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  console.log(`CURRENT USER: ${auth.currentUser}`);
+  return <div>HELLO WORLD</div>;
 }
 
 export default App;
