@@ -51,22 +51,33 @@ var client = new discord_js_1.Client({
 });
 var BOT_PREFIX = "$anta";
 var START_SANTA_COMMAND = "start";
+var SET_DESIRE_COMMAND = "request";
 var YES_REACTION = "";
 var NO_REACTION = "";
 client.on("ready", function () {
     console.log("Bot is ready");
 });
 client.on("message", function (message) {
+    if (message.author.id === process.env.BOT_ID) {
+        return;
+    }
     if (message.content.startsWith(BOT_PREFIX)) {
         var command = message.content.substring(message.content.indexOf(BOT_PREFIX) + BOT_PREFIX.length + 1);
+        var args = message.content.substring(message.content.indexOf(" --")).split(" --").slice(1);
         switch (command) {
             case START_SANTA_COMMAND:
                 startSanta(message);
+                break;
+            case SET_DESIRE_COMMAND:
                 break;
             default:
                 message.channel.send("That ain't a command bub");
                 break;
         }
+    }
+    else if (message.channel instanceof discord_js_1.DMChannel) {
+        message.reply('hi');
+        return;
     }
 });
 function startSanta(message) {
