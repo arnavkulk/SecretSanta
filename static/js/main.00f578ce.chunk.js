@@ -1,2 +1,0 @@
-(this["webpackJsonpsecret-santa-website"]=this["webpackJsonpsecret-santa-website"]||[]).push([[0],{9:function(e,t,n){"use strict";n.r(t);var s=n(1),c=n(0),o=n.n(c),r=n(3);var i=function(){return console.log("HELLLLO"),console.log("PROCESS"+String("production")),Object(s.jsx)("div",{children:"HELLO WORLD"})};n.n(r).a.render(Object(s.jsx)(o.a.StrictMode,{children:Object(s.jsx)(i,{})}),document.getElementById("root"))}},[[9,1,2]]]);
-//# sourceMappingURL=main.00f578ce.chunk.js.map
