@@ -1,6 +1,6 @@
 {
   "name": "secret-santa-website",
-  "homepage": "http://arnavyk.github.io/secret-santa-website",
+  "homepage": "http://arnavyk.github.io/SecretSanta",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
