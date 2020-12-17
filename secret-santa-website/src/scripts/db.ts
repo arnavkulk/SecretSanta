@@ -46,6 +46,10 @@ export function startDrawing(): Promise<void> {
 
 export async function resetDrawing(): Promise<void> {
   await db
+    .collection("history")
+    .doc(new Date().getFullYear().toString())
+    .delete();
+  await db
     .collection("commands")
     .doc("commandCenter")
     .update({ state: "not started" });

@@ -40,9 +40,13 @@ async function pairSantas(
         randomIndex = Math.floor(Math.random() * remainingSantas.length);
         santa = remainingSantas[randomIndex];
       }
-      const { name, desire } = santa.data() as User;
+      const { name, desire, dislike } = santa.data() as User;
 
-      await participant.ref.update({ person: name, personDesire: desire });
+      await participant.ref.update({
+        person: name,
+        personDesire: desire,
+        personDislike: dislike,
+      });
       resp[participant.id] = santa.id;
       remainingSantas.splice(randomIndex, 1);
     }
