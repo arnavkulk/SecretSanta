@@ -96,16 +96,24 @@ export default function Dashboard() {
       <>
         <Card>
           <Card.Body>
-            <CircularProgress color="secondary" />
-            <h2>Pairing...</h2>
-            {userData.userType === "admin" && (
-              <>
-                <br></br>
-                <Button onClick={resetDrawing} variant="danger">
-                  Cancel Drawing
-                </Button>
-              </>
-            )}
+            <div className="text-center mt-2">
+              <CircularProgress color="secondary" />
+            </div>
+            <div className="w-100 text-center mt-2">
+              <h2>Pairing...</h2>
+              {userData.userType === "admin" && (
+                <>
+                  <br></br>
+                  <Button
+                    onClick={resetDrawing}
+                    variant="danger"
+                    className="w-100"
+                  >
+                    Cancel Drawing
+                  </Button>
+                </>
+              )}
+            </div>
           </Card.Body>
         </Card>
       </>
@@ -133,9 +141,15 @@ export default function Dashboard() {
             {userData.userType === "admin" && (
               <>
                 <br></br>
-                <Button onClick={resetDrawing} variant="danger">
-                  Reset Drawing
-                </Button>
+                <div className="w-100 text-center mt-2">
+                  <Button
+                    onClick={resetDrawing}
+                    variant="danger"
+                    className="w-100"
+                  >
+                    Reset Drawing
+                  </Button>
+                </div>
               </>
             )}
             <Link to="/update-profile" className="btn btn-primary w-100 mt-3">
