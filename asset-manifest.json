@@ -1,17 +1,20 @@
 {
   "files": {
-    "main.js": "/SecretSanta/static/js/main.73bd4af6.chunk.js",
-    "main.js.map": "/SecretSanta/static/js/main.73bd4af6.chunk.js.map",
-    "runtime-main.js": "/SecretSanta/static/js/runtime-main.fa9785bc.js",
-    "runtime-main.js.map": "/SecretSanta/static/js/runtime-main.fa9785bc.js.map",
-    "static/js/2.fef8fb0c.chunk.js": "/SecretSanta/static/js/2.fef8fb0c.chunk.js",
-    "static/js/2.fef8fb0c.chunk.js.map": "/SecretSanta/static/js/2.fef8fb0c.chunk.js.map",
+    "main.js": "/SecretSanta/static/js/main.70b12231.chunk.js",
+    "main.js.map": "/SecretSanta/static/js/main.70b12231.chunk.js.map",
+    "runtime-main.js": "/SecretSanta/static/js/runtime-main.1ae9a5a5.js",
+    "runtime-main.js.map": "/SecretSanta/static/js/runtime-main.1ae9a5a5.js.map",
+    "static/css/2.1a02f21c.chunk.css": "/SecretSanta/static/css/2.1a02f21c.chunk.css",
+    "static/js/2.3f26d1a8.chunk.js": "/SecretSanta/static/js/2.3f26d1a8.chunk.js",
+    "static/js/2.3f26d1a8.chunk.js.map": "/SecretSanta/static/js/2.3f26d1a8.chunk.js.map",
     "index.html": "/SecretSanta/index.html",
-    "static/js/2.fef8fb0c.chunk.js.LICENSE.txt": "/SecretSanta/static/js/2.fef8fb0c.chunk.js.LICENSE.txt"
+    "static/css/2.1a02f21c.chunk.css.map": "/SecretSanta/static/css/2.1a02f21c.chunk.css.map",
+    "static/js/2.3f26d1a8.chunk.js.LICENSE.txt": "/SecretSanta/static/js/2.3f26d1a8.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
-    "static/js/runtime-main.fa9785bc.js",
-    "static/js/2.fef8fb0c.chunk.js",
-    "static/js/main.73bd4af6.chunk.js"
+    "static/js/runtime-main.1ae9a5a5.js",
+    "static/css/2.1a02f21c.chunk.css",
+    "static/js/2.3f26d1a8.chunk.js",
+    "static/js/main.70b12231.chunk.js"
   ]
 }
