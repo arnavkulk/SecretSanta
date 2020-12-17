@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import { Form, Button, Card, Alert } from "react-bootstrap";
 import { useAuth } from "../contexts/AuthContext";
 import { Link, useHistory } from "react-router-dom";
-import { login } from "../scripts/auth";
+import { login, googleSignIn } from "../scripts/auth";
 
 export default function Login() {
   const emailRef = useRef<HTMLInputElement>(null);
@@ -16,26 +16,30 @@ export default function Login() {
     history.push("/SecretSanta/");
   }
 
-  async function handleSubmit(e) {
-    e.preventDefault();
+  async function handleSubmit(e: any, type: string) {
+    if (e) e.preventDefault();
 
     try {
       setError("");
       setLoading(true);
-      await login(emailRef.current?.value, passwordRef.current?.value);
+      if (type === "google") {
+        await googleSignIn();
+      } else {
+        await login(emailRef.current?.value, passwordRef.current?.value);
+      }
       history.push("/SecretSanta/");
     } catch (error) {
-      console.log(error)
-      if(error.code === "auth/email-already-exists") {
+      console.log(error);
+      if (error.code === "auth/email-already-exists") {
         setError("A user with this email already exists");
-      } else if(error.code === "auth/invalid-email") {
+      } else if (error.code === "auth/invalid-email") {
         setError("Invalid email");
-      } else if(error.code === "auth/wrong-password") {
+      } else if (error.code === "auth/wrong-password") {
         setError("Incorrect password");
-      } else if(error.code === "auth/user-not-found") {
+      } else if (error.code === "auth/user-not-found") {
         setError("No user with this email");
       } else {
-        setError("Failed to log in")
+        setError("Failed to log in");
       }
     }
 
@@ -48,7 +52,7 @@ export default function Login() {
         <Card.Body>
           <h2 className="text-center mb-4">Log In</h2>
           {error && <Alert variant="danger">{error}</Alert>}
-          <Form onSubmit={handleSubmit}>
+          <Form onSubmit={(e) => handleSubmit(e, "email")}>
             <Form.Group id="email">
               <Form.Label>Email</Form.Label>
               <Form.Control type="email" ref={emailRef} required />

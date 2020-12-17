@@ -10,34 +10,64 @@ export const handleCommand = functions.firestore
     let state: string = change.after.data().state;
     if (state === "started") {
       let users = await admin.firestore().collection("users").get();
-      await pairSantas(users.docs);
+      let histories = await admin.firestore().collection("history").get();
+      let history = await pairSantas(users.docs, histories.docs);
+      await admin
+        .firestore()
+        .collection("history")
+        .doc(new Date().getFullYear().toString())
+        .set(history);
       await change.after.ref.update({ state: "released" });
     }
   });
 
 async function pairSantas(
-  participants: Array<DocumentSnapshot>
-): Promise<void> {
+  participants: Array<DocumentSnapshot>,
+  histories: Array<DocumentSnapshot>
+): Promise<Object> {
   try {
+    let resp: any = {};
     let remainingSantas = [...participants];
     for (let i = 0; i < participants.length; i++) {
       let participant = participants[i];
       let randomIndex = Math.floor(Math.random() * remainingSantas.length);
       let santa = remainingSantas[randomIndex];
 
-      while (santa.id === participant.id) {
+      while (
+        santa.id === participant.id &&
+        hasHadBefore(participant.id, santa.id, histories)
+      ) {
         randomIndex = Math.floor(Math.random() * remainingSantas.length);
         santa = remainingSantas[randomIndex];
       }
       const { name, desire } = santa.data() as User;
 
       await participant.ref.update({ person: name, personDesire: desire });
-
+      resp[participant.id] = santa.id;
       remainingSantas.splice(randomIndex, 1);
     }
+    return resp;
   } catch (error) {
     console.log(error);
   }
+  return {};
+}
+
+function hasHadBefore(
+  person: string,
+  santa: string,
+  histories: DocumentSnapshot[]
+): boolean {
+  let resp = false;
+  histories.forEach((doc) => {
+    let data = doc.data() !== undefined ? doc.data() : {};
+    if (data) {
+      if (data[person] === santa) {
+        resp = true;
+      }
+    }
+  });
+  return resp;
 }
 
 interface User {

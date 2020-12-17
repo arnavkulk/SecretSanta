@@ -27,5 +27,6 @@ export function updatePassword(currentUser: firebase.User, password: string) {
 
 export async function googleSignIn(): Promise<firebase.auth.UserCredential> {
   let provider = new firebase.auth.GoogleAuthProvider();
-  return await auth.signInWithPopup(provider);
+  await auth.signInWithRedirect(provider)
+  return await auth.getRedirectResult()
 }
