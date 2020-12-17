@@ -4,10 +4,10 @@ import { Link } from "react-router-dom";
 import { resetPassword } from "../scripts/auth";
 
 const ForgotPassword: React.FC = () => {
-  const emailRef = useRef();
+  const emailRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<string>("");
   const [message, setMessage] = useState<string>("");
-  const [loading, setLoading] = useState<Boolean>(false);
+  const [loading, setLoading] = useState<true | false>(false);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -16,7 +16,10 @@ const ForgotPassword: React.FC = () => {
       setMessage("");
       setError("");
       setLoading(true);
-      await resetPassword(emailRef.current.value);
+      if (emailRef.current) {
+        await resetPassword(emailRef.current.value);
+      }
+
       setMessage("Check your inbox for further instructions");
     } catch {
       setError("Failed to reset password");
@@ -51,6 +54,6 @@ const ForgotPassword: React.FC = () => {
       </div>
     </>
   );
-}
+};
 
-export default ForgotPassword
+export default ForgotPassword;

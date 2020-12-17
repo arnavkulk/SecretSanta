@@ -1,13 +1,15 @@
 import React, { useRef, useState } from "react";
 import { Form, Button, Card, Alert } from "react-bootstrap";
-import { useAuth } from "../contexts/AuthContext";
 import { Link, useHistory } from "react-router-dom";
 import { signup } from "../scripts/auth";
-
+import { addUser, User } from "../scripts/db";
 export default function Signup() {
-  const emailRef = useRef();
-  const passwordRef = useRef();
-  const passwordConfirmRef = useRef();
+  const nameRef = useRef<HTMLInputElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
+  const passwordConfirmRef = useRef<HTMLInputElement>(null);
+  const desireRef = useRef<HTMLInputElement>(null);
+  const dislikeRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const history = useHistory();
@@ -15,17 +17,35 @@ export default function Signup() {
   async function handleSubmit(e) {
     e.preventDefault();
 
-    if (passwordRef.current.value !== passwordConfirmRef.current.value) {
+    if (passwordRef.current?.value !== passwordConfirmRef.current?.value) {
       return setError("Passwords do not match");
     }
 
     try {
       setError("");
       setLoading(true);
-      await signup(emailRef.current.value, passwordRef.current.value);
+      const user = await signup(
+        emailRef.current?.value,
+        passwordRef.current?.value
+      );
+      if (!user.user) {
+        setError("Failed to create an account");
+        return;
+      }
+      const data: User = {
+        email: emailRef.current?.value,
+        name: nameRef.current?.value,
+        desire: desireRef.current?.value,
+        dislike: dislikeRef.current?.value,
+        userType: "user",
+        personDesire: "",
+        personDislike: "",
+        person: "",
+      };
+      await addUser(user.user.uid, data);
       history.push("/");
-    } catch {
-      setError("Failed to create an account");
+    } catch (error) {
+      if (error === "") setError("Failed to create an account");
     }
 
     setLoading(false);
@@ -38,6 +58,10 @@ export default function Signup() {
           <h2 className="text-center mb-4">Sign Up</h2>
           {error && <Alert variant="danger">{error}</Alert>}
           <Form onSubmit={handleSubmit}>
+            <Form.Group id="name">
+              <Form.Label>Name</Form.Label>
+              <Form.Control type="text" ref={nameRef} required />
+            </Form.Group>
             <Form.Group id="email">
               <Form.Label>Email</Form.Label>
               <Form.Control type="email" ref={emailRef} required />
@@ -49,6 +73,14 @@ export default function Signup() {
             <Form.Group id="password-confirm">
               <Form.Label>Password Confirmation</Form.Label>
               <Form.Control type="password" ref={passwordConfirmRef} required />
+            </Form.Group>
+            <Form.Group id="want">
+              <Form.Label>What you want</Form.Label>
+              <Form.Control type="text" ref={desireRef} required />
+            </Form.Group>
+            <Form.Group id="dontwant">
+              <Form.Label>What you don't Want</Form.Label>
+              <Form.Control type="text" ref={dislikeRef} required />
             </Form.Group>
             <Button disabled={loading} className="w-100" type="submit">
               Sign Up

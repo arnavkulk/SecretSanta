@@ -3,7 +3,7 @@ import { auth } from "../firebase";
 import firebase from "firebase";
 
 interface State {
-  currentUser: firebase.User;
+  currentUser: firebase.User | null;
 }
 
 const AuthContext = createContext<State>({ currentUser: null });
@@ -13,7 +13,7 @@ export const useAuth = (): State => {
 };
 
 export const AuthProvider: React.FC = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState<firebase.User>(null);
+  const [currentUser, setCurrentUser] = useState<firebase.User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

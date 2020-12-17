@@ -1,77 +1,89 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Form, Button, Card, Alert } from "react-bootstrap";
-import { useAuth } from "../contexts/AuthContext";
 import { Link, useHistory } from "react-router-dom";
-import { updatePassword, updateEmail } from "../scripts/auth";
+import { useAuth } from "../contexts/AuthContext";
+import { updateUserInfo, User, getUser } from "../scripts/db";
 
 export default function UpdateProfile() {
-  const emailRef = useRef();
-  const passwordRef = useRef();
-  const passwordConfirmRef = useRef();
-  const { currentUser } = useAuth();
+  const nameRef = useRef<HTMLInputElement>(null);
+  const desireRef = useRef<HTMLInputElement>(null);
+  const dislikeRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const history = useHistory();
+  const { currentUser } = useAuth();
+  const [userData, setUserData] = useState<User>({
+    name: "",
+    desire: "",
+    email: "",
+    dislike: "",
+    personDesire: "",
+    personDislike: "",
+  });
 
-  function handleSubmit(e) {
-    e.preventDefault();
-    if (passwordRef.current.value !== passwordConfirmRef.current.value) {
-      return setError("Passwords do not match");
-    }
-
-    const promises: any[] = [];
-    setLoading(true);
-    setError("");
-
-    if (emailRef.current.value !== currentUser?.email) {
-      promises.push(updateEmail(currentUser, emailRef.current.value));
-    }
-    if (passwordRef.current.value) {
-      promises.push(updatePassword(currentUser, passwordRef.current.value));
-    }
-
-    Promise.all(promises)
-      .then(() => {
-        history.push("/");
-      })
-      .catch(() => {
-        setError("Failed to update account");
-      })
-      .finally(() => {
-        setLoading(false);
+  useEffect(() => {
+    if (currentUser) {
+      getUser(currentUser.uid).then((user) => {
+        setUserData(user.data() as User);
       });
+    }
+  }, [currentUser, userData]);
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    try {
+      if (!currentUser) {
+        setError("Failed to update info");
+        return;
+      }
+      setError("");
+      setLoading(true);
+      const data: User = {
+        name: nameRef.current?.value,
+        desire: desireRef.current?.value,
+        dislike: dislikeRef.current?.value,
+      };
+      await updateUserInfo(currentUser.uid, data);
+      history.push("/");
+    } catch (error) {
+      if (error === "") setError("Failed to create an account");
+    }
+
+    setLoading(false);
   }
 
   return (
     <>
       <Card>
         <Card.Body>
-          <h2 className="text-center mb-4">Update Profile</h2>
+          <h2 className="text-center mb-4">Update Info</h2>
           {error && <Alert variant="danger">{error}</Alert>}
           <Form onSubmit={handleSubmit}>
-            <Form.Group id="email">
-              <Form.Label>Email</Form.Label>
+            <Form.Group id="name">
+              <Form.Label>Name</Form.Label>
               <Form.Control
-                type="email"
-                ref={emailRef}
+                type="text"
+                ref={nameRef}
+                defaultValue={userData.name}
                 required
-                defaultValue={currentUser.email?.toString()}
               />
             </Form.Group>
-            <Form.Group id="password">
-              <Form.Label>Password</Form.Label>
+            <Form.Group id="want">
+              <Form.Label>What you want</Form.Label>
               <Form.Control
-                type="password"
-                ref={passwordRef}
-                placeholder="Leave blank to keep the same"
+                type="text"
+                ref={desireRef}
+                defaultValue={userData.desire}
+                required
               />
             </Form.Group>
-            <Form.Group id="password-confirm">
-              <Form.Label>Password Confirmation</Form.Label>
+            <Form.Group id="dontwant">
+              <Form.Label>What you don't Want</Form.Label>
               <Form.Control
-                type="password"
-                ref={passwordConfirmRef}
-                placeholder="Leave blank to keep the same"
+                type="text"
+                ref={dislikeRef}
+                defaultValue={userData.dislike}
+                required
               />
             </Form.Group>
             <Button disabled={loading} className="w-100" type="submit">
