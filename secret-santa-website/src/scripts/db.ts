@@ -1,4 +1,4 @@
-import { db, default as app } from "../firebase";
+import { db} from "../firebase";
 import firebase from "firebase";
 
 export interface User {
