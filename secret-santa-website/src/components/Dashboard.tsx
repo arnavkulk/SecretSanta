@@ -26,6 +26,10 @@ export default function Dashboard() {
   const { currentUser } = useAuth();
   const history = useHistory();
 
+  if (currentUser === null) {
+    history.push("/SecretSanta/login");
+  }
+  
   async function handleLogout() {
     setError("");
 

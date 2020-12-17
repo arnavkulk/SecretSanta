@@ -45,7 +45,17 @@ export default function Signup() {
       await addUser(user.user.uid, data);
       history.push("/SecretSanta/");
     } catch (error) {
-      if (error === "") setError("Failed to create an account");
+      if(error.code === "auth/email-already-in-use") {
+        setError("A user with this email already exists");
+      } else if(error.code === "auth/invalid-email") {
+        setError("Invalid email");
+      } else if(error.code === "auth/weak-password") {
+        setError("Password must be at least 6 characters");
+      } else if(error.code === "auth/user-not-found") {
+        setError("No user with this email");
+      } else {
+        setError("Failed to create account")
+      }
     }
 
     setLoading(false);

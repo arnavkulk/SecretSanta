@@ -10,6 +10,11 @@ export default function Login() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const history = useHistory();
+  const { currentUser } = useAuth();
+
+  if (currentUser !== null) {
+    history.push("/SecretSanta/");
+  }
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -19,8 +24,19 @@ export default function Login() {
       setLoading(true);
       await login(emailRef.current?.value, passwordRef.current?.value);
       history.push("/SecretSanta/");
-    } catch {
-      setError("Failed to log in");
+    } catch (error) {
+      console.log(error)
+      if(error.code === "auth/email-already-exists") {
+        setError("A user with this email already exists");
+      } else if(error.code === "auth/invalid-email") {
+        setError("Invalid email");
+      } else if(error.code === "auth/wrong-password") {
+        setError("Incorrect password");
+      } else if(error.code === "auth/user-not-found") {
+        setError("No user with this email");
+      } else {
+        setError("Failed to log in")
+      }
     }
 
     setLoading(false);

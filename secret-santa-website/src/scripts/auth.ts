@@ -14,13 +14,18 @@ export function logout(): Promise<void> {
 }
 
 export function resetPassword(email: string) {
-  return auth.sendPasswordResetEmail(email)
+  return auth.sendPasswordResetEmail(email);
 }
 
 export function updateEmail(currentUser: firebase.User, email: string) {
-  return currentUser.updateEmail(email)
+  return currentUser.updateEmail(email);
 }
 
 export function updatePassword(currentUser: firebase.User, password: string) {
-  return currentUser.updatePassword(password)
+  return currentUser.updatePassword(password);
+}
+
+export async function googleSignIn(): Promise<firebase.auth.UserCredential> {
+  let provider = new firebase.auth.GoogleAuthProvider();
+  return await auth.signInWithPopup(provider);
 }
