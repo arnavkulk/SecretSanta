@@ -45,12 +45,12 @@ const ForgotPassword: React.FC = () => {
             </Button>
           </Form>
           <div className="w-100 text-center mt-3">
-            <Link to="/login">Login</Link>
+            <Link to="/SecretSanta/login">Login</Link>
           </div>
         </Card.Body>
       </Card>
       <div className="w-100 text-center mt-2">
-        Need an account? <Link to="/signup">Sign Up</Link>
+        Need an account? <Link to="/SecretSanta/signup">Sign Up</Link>
       </div>
     </>
   );

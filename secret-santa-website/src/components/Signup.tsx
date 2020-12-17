@@ -43,7 +43,7 @@ export default function Signup() {
         person: "",
       };
       await addUser(user.user.uid, data);
-      history.push("/");
+      history.push("/SecretSanta/");
     } catch (error) {
       if (error === "") setError("Failed to create an account");
     }
@@ -89,7 +89,7 @@ export default function Signup() {
         </Card.Body>
       </Card>
       <div className="w-100 text-center mt-2">
-        Already have an account? <Link to="/login">Log In</Link>
+        Already have an account? <Link to="/SecretSanta/login">Log In</Link>
       </div>
     </>
   );

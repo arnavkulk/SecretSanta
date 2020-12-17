@@ -31,7 +31,7 @@ export default function Dashboard() {
 
     try {
       await logout();
-      history.push("/login");
+      history.push("/SecretSanta/login");
     } catch {
       setError("Failed to log out");
     }
@@ -79,7 +79,7 @@ export default function Dashboard() {
                 </div>
               </>
             )}
-            <Link to="/update-profile" className="btn btn-primary w-100 mt-3">
+            <Link to="/SecretSanta/update-profile" className="btn btn-primary w-100 mt-3">
               Update Profile
             </Link>
           </Card.Body>
@@ -152,7 +152,7 @@ export default function Dashboard() {
                 </div>
               </>
             )}
-            <Link to="/update-profile" className="btn btn-primary w-100 mt-3">
+            <Link to="/SecretSanta/update-profile" className="btn btn-primary w-100 mt-3">
               Update Profile
             </Link>
           </Card.Body>
