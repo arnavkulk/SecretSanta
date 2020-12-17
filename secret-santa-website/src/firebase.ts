@@ -1,5 +1,6 @@
 import firebase from "firebase/app";
 import "firebase/auth";
+import "firebase/firestore"
 import * as dotenv from "dotenv";
 
 dotenv.config();
@@ -16,7 +17,7 @@ const firebaseConfig = {
 
 let app = firebase.initializeApp(firebaseConfig);
 
-export let db = app.firestore();
 export let auth = app.auth();
+export let db = app.firestore();
 
 export default app;

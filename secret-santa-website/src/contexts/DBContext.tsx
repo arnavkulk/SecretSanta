@@ -1,27 +1,31 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { isPropertySignature } from "typescript";
 import { db } from "../firebase";
 
-const FirestoreContext = createContext();
+interface State {
+  collectionData: any,
+  docData: any
+}
 
-export const useFirestore: React.FC = () => useContext(FirestoreContext);
+const DBContext = createContext<State>({collectionData: [], docData: []});
+
+export const useDB = (props: Props): State => useContext<State>(DBContext);
 
 interface Props {
-  children?: null;
+  children?: React.ReactNode;
   collectionPaths: string[];
   docPaths: string[];
 }
 
-export const FirestoreProvider: React.FC<Props> = ({
+export const DBProvider: React.FC<Props> = ({
   children,
   collectionPaths,
-  docPaths
+  docPaths,
 }) => {
   const [collectionData, setCollectionData] = useState({});
   const [docData, setDocData] = useState({});
 
   useEffect(() => {
-    let unsubscribes: any[] = [];
+    let unsubscribes: Array<() => void> = [];
     collectionPaths.forEach((path) => {
       let unsubscribe = db.collection(path).onSnapshot((snap) => {
         let newCollectionData = collectionData;
@@ -31,23 +35,19 @@ export const FirestoreProvider: React.FC<Props> = ({
       unsubscribes.push(unsubscribe);
     });
     docPaths.forEach((path) => {
-        let unsubscribe = db.doc(path).onSnapshot((snap) => {
-          let newDocData = docData;
-          newDocData[snap.id] = snap;
-          setDocData(newDocData);
-        });
-        unsubscribes.push(unsubscribe);
+      let unsubscribe = db.doc(path).onSnapshot((snap) => {
+        let newDocData = docData;
+        newDocData[snap.id] = snap;
+        setDocData(newDocData);
       });
+      unsubscribes.push(unsubscribe);
+    });
     return () => unsubscribes.forEach((unsubscribe) => unsubscribe());
   });
 
-  let value = {
+  let value: State = {
     collectionData,
-    docData
+    docData,
   };
-  return (
-    <FirestoreContext.Provider value={value}>
-      {children}
-    </FirestoreContext.Provider>
-  );
+  return <DBContext.Provider value={value}>{children}</DBContext.Provider>;
 };
