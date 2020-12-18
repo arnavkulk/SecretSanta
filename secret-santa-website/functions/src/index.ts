@@ -32,14 +32,14 @@ async function pairSantas(
       let participant = participants[i];
       let randomIndex = Math.floor(Math.random() * remainingSantas.length);
       let santa = remainingSantas[randomIndex];
+      let alreadyHad = hasHadBefore(participant.id, santa.id, histories);
 
-      while (
-        santa.id === participant.id &&
-        hasHadBefore(participant.id, santa.id, histories)
-      ) {
+      while (santa.id === participant.id || alreadyHad) {
         randomIndex = Math.floor(Math.random() * remainingSantas.length);
         santa = remainingSantas[randomIndex];
+        alreadyHad = hasHadBefore(participant.id, santa.id, histories);
       }
+      
       const { name, desire, dislike } = santa.data() as User;
 
       await participant.ref.update({
