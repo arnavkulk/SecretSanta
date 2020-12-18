@@ -33,13 +33,19 @@ async function pairSantas(
       let randomIndex = Math.floor(Math.random() * remainingSantas.length);
       let santa = remainingSantas[randomIndex];
       let alreadyHad = hasHadBefore(participant.id, santa.id, histories);
-
+      if (remainingSantas.length === 1) {
+        if (participant.id === remainingSantas[0].id) {
+          await resetDrawing();
+          let resp = await pairSantas(participants, histories);
+          return resp;
+        }
+      }
       while (santa.id === participant.id || alreadyHad) {
         randomIndex = Math.floor(Math.random() * remainingSantas.length);
         santa = remainingSantas[randomIndex];
         alreadyHad = hasHadBefore(participant.id, santa.id, histories);
       }
-      
+
       const { name, desire, dislike } = santa.data() as User;
 
       await participant.ref.update({
@@ -74,6 +80,21 @@ function hasHadBefore(
   return resp;
 }
 
+async function resetDrawing(): Promise<void> {
+  await admin
+    .firestore()
+    .collection("commands")
+    .doc("commandCenter")
+    .update({ state: "not started" });
+  let users = await admin.firestore().collection("users").get();
+  let promises: Array<Promise<FirebaseFirestore.WriteResult>> = [];
+  users.docs.forEach((doc) => {
+    promises.push(
+      doc.ref.update({ person: "", personDesire: "", personDislike: "" })
+    );
+  });
+  await Promise.all(promises);
+}
 interface User {
   name: string;
   desire: string;
