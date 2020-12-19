@@ -33,13 +33,23 @@ async function pairSantas(
       let randomIndex = Math.floor(Math.random() * remainingSantas.length);
       let santa = remainingSantas[randomIndex];
       let alreadyHad = hasHadBefore(participant.id, santa.id, histories);
-      if (remainingSantas.length === 1) {
-        if (participant.id === remainingSantas[0].id) {
-          await resetDrawing();
-          let resp = await pairSantas(participants, histories);
-          return resp;
+
+      let retry = true;
+      remainingSantas.forEach((santa) => {
+        if (
+          santa.id !== participant.id &&
+          !hasHadBefore(participant.id, santa.id, histories)
+        ) {
+          retry = false;
         }
+      });
+      
+      if (retry) {
+        await resetDrawing();
+        let resp = await pairSantas(participants, histories);
+        return resp;
       }
+
       while (santa.id === participant.id || alreadyHad) {
         randomIndex = Math.floor(Math.random() * remainingSantas.length);
         santa = remainingSantas[randomIndex];
