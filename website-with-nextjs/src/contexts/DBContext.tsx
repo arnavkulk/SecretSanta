@@ -43,7 +43,7 @@ export const DBProvider: React.FC<Props> = ({
       unsubscribes.push(unsubscribe);
     });
     return () => unsubscribes.forEach((unsubscribe) => unsubscribe());
-  }, []);
+  });
 
   let value: State = {
     collectionData,
