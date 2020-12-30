@@ -1,11 +1,11 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Form, Button, Card, Alert } from "react-bootstrap";
-import Link from "next/link"
+import Link from "next/link";
 import { useAuth } from "../contexts/AuthContext";
 import { updateUserInfo, User, getUser } from "../scripts/db";
 import { useRouter } from "next/router";
-import { useAsync } from "../components/Utils"
-import firebase from "firebase"
+import { useAsync } from "../components/Utils";
+import firebase from "firebase";
 
 export default function UpdateProfile() {
   const nameRef = useRef<HTMLInputElement>(null);
@@ -24,11 +24,24 @@ export default function UpdateProfile() {
     personDislike: "",
   });
 
-  useAsync(
-    () => getUser(currentUser.uid),
-    (user: firebase.firestore.DocumentSnapshot) =>
-      setUserData(user.data() as User)
-  );
+  useEffect(() => {
+    if (currentUser) {
+      getUser(currentUser.uid).then((snap) => {
+        setUserData(snap.data() as User);
+      });
+    } else {
+      setUserData({
+        email: "",
+        desire: "",
+        personDesire: "",
+        dislike: "",
+        personDislike: "",
+        name: "",
+        userType: "",
+        person: "",
+      });
+    }
+  }, [currentUser]);
 
   async function handleSubmit(e) {
     e.preventDefault();

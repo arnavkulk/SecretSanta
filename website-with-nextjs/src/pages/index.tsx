@@ -45,19 +45,33 @@ export default function Dashboard() {
       setError("Failed to log out");
     }
   }
-  
-  useAsync(
-    () => getUser(currentUser.uid),
-    (user: firebase.firestore.DocumentSnapshot) =>
-      setUserData(user.data() as User)
-  );
 
   useEffect(() => {
+    if (currentUser) {
+      getUser(currentUser.uid).then((snap) => {
+        setUserData(snap.data() as User);
+      });
+    } else {
+      setUserData({
+        email: "",
+        desire: "",
+        personDesire: "",
+        dislike: "",
+        personDislike: "",
+        name: "",
+        userType: "",
+        person: "",
+      });
+    }
+  }, [currentUser]);
+
+  useEffect(() => {
+    console.log("use effect index");
     let unsubscribe = addListener("commands/commandCenter", (snap) => {
       setCommand(snap.data()?.state);
     });
     return unsubscribe;
-  }, [command]);
+  }, []);
 
   if (command === "not started") {
     return (
