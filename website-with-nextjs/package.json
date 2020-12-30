@@ -1,11 +1,15 @@
 {
   "name": "website-with-nextjs",
+  "homepage": "http://arnavyk.github.io/SecretSanta",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "export": "next export",
+    "predeploy": "npm run build && npm run export",
+    "deploy": "gh-pages -d out"
   },
   "dependencies": {
     "@material-ui/core": "^4.11.2",
